@@ -1,6 +1,7 @@
 import React from 'react';
 import { StyleSheet, Text, TextInput, FlatList, View, TouchableOpacity, Alert } from 'react-native';
 import PickerSelect from 'react-native-picker-select';
+import { createOpenLink } from 'react-native-open-maps';
 
 import { search } from '../lib/utils';
 
@@ -87,7 +88,9 @@ const SearchResources = function ({ route, navigation }) {
   const Item = (props) => {
     return (
       <TouchableOpacity style={styles.itemTouchable}
-          onPress={() => { navigation.navigate('Map', { item: props }); }}>
+          //onPress={() => { navigation.navigate('Map', { item: props }); }}
+          onPress={createOpenLink({ query:props.location, provider: 'google', zoom: 10})}
+          >
         <View style={styles.itemView}>
           <Text style={styles.itemName}>{props.name}</Text>
           <Text style={styles.itemQuantity}> ( {props.quantity} ) </Text>
