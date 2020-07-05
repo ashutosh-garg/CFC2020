@@ -1,4 +1,5 @@
 import React from 'react';
+import { createOpenLink } from 'react-native-open-maps';
 import { StyleSheet, KeyboardAvoidingView, ScrollView, View, Text, TextInput, Button, TouchableOpacity, Linking } from 'react-native';
 
 import { session, message } from '../lib/utils';
@@ -88,7 +89,7 @@ const Chat = function ({ navigation }) {
     }
 
     return (
-      <TouchableOpacity onPress={() => { navigation.navigate('Map', { item: props }); }}>
+      <TouchableOpacity onPress={createOpenLink({ query:props.location, provider: 'google', zoom: 10})}>
         <Text style={styles.chatText}>  {props.quantity} at <Text style={styles.anchorLink}>{locationText}</Text> </Text>
       </TouchableOpacity>
     )
