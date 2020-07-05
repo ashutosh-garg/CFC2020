@@ -125,9 +125,15 @@ const SearchResources = function ({ route, navigation }) {
           value={query.type}
           onValueChange={(t) => setQuery({ ...query, type: t })}
           items={[
-              { label: 'Food', value: 'Food' },
-              { label: 'Help', value: 'Help' },
-              { label: 'Other', value: 'Other' }
+            { label: 'Food', value: 'Food' },
+            { label: 'Water', value: 'Water' },
+            { label: 'Grocery', value: 'Grocery' },
+            { label: 'Dairy Products', value: 'Dairy' },
+            { label: 'Medical Needs', value: 'Medical' },
+            { label: 'Stationary Needs', value: 'Stationary' },
+            { label: 'Shelter Needs', value: 'Shelter' },
+            { label: 'Help', value: 'Help' },
+            { label: 'Other', value: 'Other' }
           ]}
         />
         <Text style={styles.label}>Name</Text>
@@ -153,6 +159,11 @@ const SearchResources = function ({ route, navigation }) {
         renderItem={({ item }) => <Item {...item} />}
         keyExtractor={item => item.id || item['_id']}
       />
+
+      <TouchableOpacity 
+          onPress={() => { navigation.navigate('Add Request'); }}>
+        <Text style={styles.button}>Add Request</Text>
+      </TouchableOpacity>
     </View>
   );
 };

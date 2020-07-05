@@ -98,6 +98,34 @@ function find(type, partialName, userID) {
             selector['userID'] = userID;
         }
         
+        selector['isRequest'] = false;
+
+        db.find({ 
+            'selector': selector
+        }, (err, documents) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve({ data: JSON.stringify(documents.docs), statusCode: 200});
+            }
+        });
+    });
+}
+
+function findRequest(type, partialName) {
+    return new Promise((resolve, reject) => {
+        let selector = {}
+        if (type) {
+            selector['type'] = type;
+        }
+        if (partialName) {
+            let search = `(?i).*${partialName}.*`;
+            selector['name'] = {'$regex': search};
+
+        }
+        
+        selector['isRequest'] = true;
+
         db.find({ 
             'selector': selector
         }, (err, documents) => {
@@ -151,7 +179,7 @@ function deleteById(id, rev) {
  * @return {Promise} - promise that will be resolved (or rejected)
  * when the call to the DB completes
  */
-function create(type, name, description, quantity, location, contact, userID) {
+function create(type, name, description, quantity, location, contact, userID, isRequest) {
     return new Promise((resolve, reject) => {
         let itemId = uuidv4();
         let whenCreated = Date.now();
@@ -165,6 +193,7 @@ function create(type, name, description, quantity, location, contact, userID) {
             location: location,
             contact: contact,
             userID: userID,
+            isRequest: isRequest,
             whenCreated: whenCreated
         };
         db.insert(item, (err, result) => {
@@ -240,5 +269,6 @@ module.exports = {
     create: create,
     update: update,
     find: find,
+    findRequest: findRequest,
     info: info
   };

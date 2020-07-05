@@ -15,6 +15,7 @@ import AddResource from './src/screens/resource-add';
 import EditResource from './src/screens/resource-edit';
 import MyResources from './src/screens/resources-my';
 import Map from './src/screens/map';
+import Request from './src/screens/request-add';
 
 import { HomeIcon, DonateIcon, SearchIcon } from './src/images/svg-icons';
 
@@ -95,6 +96,7 @@ const SearchStackLayout = () => (
     <Stack.Screen name='Search Resources' component={SearchResources} options={ResourcesStackOptions} />
     <Stack.Screen name='Chat' component={Chat} />
     <Stack.Screen name='Map' component={Map} />
+    <Stack.Screen name='Add Request' component={Request} />
   </Stack.Navigator>
 );
 

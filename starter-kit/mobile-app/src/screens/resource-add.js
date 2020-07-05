@@ -133,8 +133,14 @@ const AddResource = function ({ navigation }) {
             onValueChange={(t) => setItem({ ...item, type: t })}
             items={[
                 { label: 'Food', value: 'Food' },
-                { label: 'Help', value: 'Help' },
-                { label: 'Other', value: 'Other' }
+				{ label: 'Water', value: 'Water' },
+				{ label: 'Grocery', value: 'Grocery' },
+				{ label: 'Dairy Products', value: 'Dairy' },
+				{ label: 'Medical Needs', value: 'Medical' },
+				{ label: 'Stationary Needs', value: 'Stationary' },
+				{ label: 'Shelter Needs', value: 'Shelter' },
+				{ label: 'Help', value: 'Help' },
+				{ label: 'Other', value: 'Other' }
             ]}
           />
         </View>
