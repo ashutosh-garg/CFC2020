@@ -71,7 +71,7 @@ const Home = () => (
       <Text style={styles.subtitle}>Starter Kit</Text>
       <Text style={styles.title}>Community Collaboration</Text>
       <Text style={styles.content}>
-        There is a growing interest in enabling communities to cooperate among
+        Hi Team. There is a growing interest in enabling communities to cooperate among
         themselves to solve problems in times of crisis, whether it be to
         advertise where supplies are held, offer assistance for collections, or
         other local services like volunteer deliveries.
