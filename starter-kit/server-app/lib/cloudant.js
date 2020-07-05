@@ -243,6 +243,8 @@ function update(id, type, name, description, quantity, location, contact, userID
                 if (contact) {item["contact"] = contact} else {item["contact"] = document.contact};
                 if (userID) {item["userID"] = userID} else {item["userID"] = document.userID};
  
+                item["isRequest"] = false;
+
                 db.insert(item, (err, result) => {
                     if (err) {
                         console.log('Error occurred: ' + err.message, 'create()');
