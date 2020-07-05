@@ -53,16 +53,18 @@ const styles = StyleSheet.create({
     fontFamily: 'IBMPlexSans-Medium',
     flex: 1,
     backgroundColor: '#fff',
-    padding: 16,
+    padding: 6,
     elevation: 2,
     paddingRight: 70,
-    marginBottom: 25
+    marginBottom: 10,
   },
   submitButton: {
     fontFamily: 'IBMPlexSans-Medium',
-    position: 'absolute',
-    right: 24,
-    bottom: 47
+    position: 'relative',
+    flex: 1,  
+    flexDirection: 'column',
+    marginBottom: 10,
+    marginLeft: 5
   },
   anchorLink: {
     fontFamily: 'IBMPlexSans-Medium',
@@ -198,13 +200,6 @@ const Chat = function ({ navigation }) {
 
   return (
     <View style={styles.outerContainer}>
-      <KeyboardAvoidingView
-        style={styles.innerContainer}
-        behavior='height'
-        keyboardVerticalOffset={Platform.select({
-          ios: 78,
-          android: 0
-        })} >
         <ScrollView contentContainerStyle={styles.scrollContainer}>
           {messages.map((msg, i) => {
             msg.key = `msg-${(new Date()).getTime()}-${i}`;
@@ -212,6 +207,7 @@ const Chat = function ({ navigation }) {
           })}
         </ScrollView>
         <View style={styles.inputContainer}>
+          <TouchableOpacity style={{width:300}}>
           <TextInput
             style={styles.textInput}
             value={input}
@@ -222,11 +218,13 @@ const Chat = function ({ navigation }) {
             placeholder='Ask a question...'
             blurOnSubmit={false}
           />
+          </TouchableOpacity>
           <View style={styles.submitButton}>
-            {input !== '' && <Button title='Send' onPress={sendMessage} />}
+          <TouchableOpacity style={{ width: 70}}>
+            <Button title='Ask' onPress={sendMessage} />
+          </TouchableOpacity>
           </View>
         </View>
-      </KeyboardAvoidingView>
     </View>
   );
 };
