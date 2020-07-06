@@ -8,7 +8,8 @@ import { createStackNavigator } from "@react-navigation/stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
 import LoadingScreen from "./src/screens/loading";
-import Home from "./src/screens/home";
+import MyRequest from "./src/screens/home";
+import EditRequest from "./src/screens/request-edit";
 import Chat from "./src/screens/chat";
 import SearchResources from "./src/screens/resources-search";
 import AddResource from "./src/screens/resource-add";
@@ -53,12 +54,12 @@ const tabBarOptions = {
 const TabLayout = () => (
   <Tab.Navigator
     style={{ paddingTop: 50 }}
-    initialRouteName="Home"
+    initialRouteName="MyRequest"
     tabBarOptions={tabBarOptions}
   >
     <Tab.Screen
-      name="Home"
-      component={Home}
+      name="My Requests"
+      component={RequestStackLayout}
       options={{
         tabBarIcon: ({ color }) => <HomeIcon fill={color} />,
       }}
@@ -78,6 +79,16 @@ const TabLayout = () => (
       }}
     />
   </Tab.Navigator>
+);
+
+const RequestStackLayout = () => (
+  <Stack.Navigator>
+    <Stack.Screen
+      name="My Requests"
+      component={MyRequest}
+    />
+    <Stack.Screen name="Edit Request" component={EditRequest} />
+  </Stack.Navigator>
 );
 
 const DonateStackLayout = () => (

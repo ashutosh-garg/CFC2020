@@ -112,7 +112,7 @@ function find(type, partialName, userID) {
     });
 }
 
-function findRequest(type, partialName) {
+function findRequest(type, partialName, userID) {
     return new Promise((resolve, reject) => {
         let selector = {}
         if (type) {
@@ -122,6 +122,9 @@ function findRequest(type, partialName) {
             let search = `(?i).*${partialName}.*`;
             selector['name'] = {'$regex': search};
 
+        }
+        if (userID) {
+            selector['userID'] = userID;
         }
         
         selector['isRequest'] = true;
@@ -228,7 +231,7 @@ function create(type, name, description, quantity, location, contact, userID, ta
  * @return {Promise} - promise that will be resolved (or rejected)
  * when the call to the DB completes
  */
-function update(id, type, name, description, quantity, location, contact, userID, tag) {
+function update(id, type, name, description, quantity, location, contact, userID, tag, isRequest) {
     return new Promise((resolve, reject) => {
         db.get(id, (err, document) => {
             if (err) {
@@ -247,7 +250,7 @@ function update(id, type, name, description, quantity, location, contact, userID
                 if (userID) {item["userID"] = userID} else {item["userID"] = document.userID};
 				if (tag) {item["tag"] = tag} else {item["tag"] = document.tag};
  
-                item["isRequest"] = false;
+                item["isRequest"] = isRequest;
 
                 db.insert(item, (err, result) => {
                     if (err) {

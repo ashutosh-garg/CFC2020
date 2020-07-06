@@ -235,7 +235,7 @@ app.patch('/api/resource/:id', (req, res) => {
   const tag = req.body.tag || '';
 
   cloudant
-    .update(req.params.id, type, name, description, quantity, location, contact, userID, tag)
+    .update(req.params.id, type, name, description, quantity, location, contact, userID, tag, false)
     .then(data => {
       if (data.statusCode != 200) {
         res.sendStatus(data.statusCode)
@@ -278,9 +278,45 @@ app.post('/api/request', (req, res) => {
   const contact = req.body.contact;
 
   cloudant
-    .create(type, name, description, quantity, location, contact, userID, true)
+    .create(type, name, description, quantity, location, contact, userID, '', true)
     .then(data => {
       if (data.statusCode != 201) {
+        res.sendStatus(data.statusCode)
+      } else {
+        res.send(data.data)
+      }
+    })
+    .catch(err => handleError(res, err));
+});
+
+app.get('/api/request', (req, res) => {
+  const userID = req.query.userID;
+  cloudant
+    .findRequest('', '', userID)
+    .then(data => {
+      if (data.statusCode != 200) {
+        res.sendStatus(data.statusCode)
+      } else {
+        res.send(data.data)
+      }
+    })
+    .catch(err => handleError(res, err));
+});
+
+app.patch('/api/request/:id', (req, res) => {
+  const type = req.body.type || '';
+  const name = req.body.name || '';
+  const description = req.body.description || '';
+  const userID = req.body.userID || '';
+  const quantity = req.body.quantity || 1;
+  const location = req.body.location || '';
+  const contact = req.body.contact || '';
+  const tag = req.body.tag || '';
+
+  cloudant
+    .update(req.params.id, type, name, description, quantity, location, contact, userID, tag, true)
+    .then(data => {
+      if (data.statusCode != 200) {
         res.sendStatus(data.statusCode)
       } else {
         res.send(data.data)

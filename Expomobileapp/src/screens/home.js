@@ -1,116 +1,109 @@
 import React from "react";
 import {
   StyleSheet,
+  FlatList,
   View,
-  Image,
   Text,
   TouchableOpacity,
-  Button,
-  Linking,
+  Alert,
 } from "react-native";
-import { ScrollView } from "react-native-gesture-handler";
+
+import { searchRequest, userID } from "../lib/utils";
 
 const styles = StyleSheet.create({
-  center: {
-    flex: 1,
+  flatListView: {
+    backgroundColor: "#FFF",
+  },
+  itemTouchable: {
     flexDirection: "column",
+    padding: 15,
     justifyContent: "flex-start",
-    alignItems: "flex-start",
-    backgroundColor: "#FFFFFF",
+    alignItems: "stretch",
+    borderBottomColor: "#dddddd",
+    borderBottomWidth: 0.25,
   },
-  scroll: {
-    paddingLeft: 20,
-    paddingRight: 20,
-    paddingBottom: 25,
-    paddingTop: 75,
+  itemView: {
+    flexDirection: "row",
+    justifyContent: "space-between",
   },
-  image: {
-    alignSelf: "flex-start",
-    height: "20%",
-    width: "50%",
-    resizeMode: "contain",
-  },
-  title: {
-    fontSize: 36,
-    color: "#323232",
-    paddingBottom: 15,
-  },
-  subtitle: {
+  itemName: {
     fontSize: 24,
-    color: "#323232",
-    textDecorationColor: "#D0E2FF",
-    textDecorationLine: "underline",
-    paddingBottom: 5,
-    paddingTop: 20,
   },
-  content: {
-    color: "#323232",
-    marginTop: 10,
-    marginBottom: 10,
-    fontSize: 16,
-  },
-  buttonGroup: {
-    flex: 1,
-    paddingTop: 15,
-    width: 175,
-  },
-  button: {
-    backgroundColor: "#1062FE",
-    color: "#FFFFFF",
+  itemDescription: {
+    fontSize: 14,
 
+    color: "gray",
+  },
+  itemQuantity: {
+    fontSize: 14,
+
+    color: "gray",
+  },
+  emptyListView: {
+    backgroundColor: "#FFFFFF",
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  emptyListText: {
+    color: "#999999",
     fontSize: 16,
-    overflow: "hidden",
-    padding: 12,
-    textAlign: "center",
-    marginTop: 15,
   },
 });
 
-const Home = () => (
-  <View style={styles.center}>
-    <ScrollView style={styles.scroll}>
-      <Image
-        style={styles.image}
-        source={require("../images/2020-cfc-512.png")}
-      />
-      <Text style={styles.subtitle}>Starter Kit</Text>
-      <Text style={styles.title}>Community Collaboration</Text>
-      <Text style={styles.content}>
-        Hi Team. There is a growing interest in enabling communities to
-        cooperate among themselves to solve problems in times of crisis, whether
-        it be to advertise where supplies are held, offer assistance for
-        collections, or other local services like volunteer deliveries.
-      </Text>
-      <Text style={styles.content}>
-        What is needed is a solution that empowers communities to easily connect
-        and provide this information to each other.
-      </Text>
-      <Text style={styles.content}>
-        This solution starter kit provides a mobile application, along with
-        server-side components, that serves as the basis for developers to build
-        out a community cooperation application that addresses local needs for
-        food, equipment, and resources.
-      </Text>
-      <View style={styles.buttonGroup}>
-        <TouchableOpacity
-          onPress={() =>
-            Linking.openURL("https://developer.ibm.com/callforcode")
-          }
-        >
-          <Text style={styles.button}>Learn more</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          onPress={() =>
-            Linking.openURL(
-              "https://github.com/Call-for-Code/Solution-Starter-Kit-Cooperation-2020"
-            )
-          }
-        >
-          <Text style={styles.button}>Get the code</Text>
-        </TouchableOpacity>
-      </View>
-    </ScrollView>
-  </View>
-);
+const MyRequest = function ({ navigation }) {
+  const [items, setItems] = React.useState([]);
 
-export default Home;
+  React.useEffect(() => {
+    navigation.addListener("focus", () => {
+      searchRequest({ userID: userID() })
+        .then(setItems)
+        .catch((err) => {
+          console.log(err);
+          Alert.alert(
+            "ERROR",
+            "Please try again. If the problem persists contact an administrator.",
+            [{ text: "OK" }]
+          );
+        });
+    });
+  }, []);
+
+  const Item = (props) => {
+    return (
+      <TouchableOpacity
+        style={styles.itemTouchable}
+        onPress={() => {
+          navigation.navigate("Edit Request", { item: props });
+        }}
+      >
+        <View style={styles.itemView}>
+          <Text style={styles.itemName}>{props.name}</Text>
+          <Text style={styles.itemQuantity}> ( {props.quantity} ) </Text>
+        </View>
+        <Text style={styles.itemDescription}>{props.description}</Text>
+      </TouchableOpacity>
+    );
+  };
+
+  if (items.length > 0) {
+    return (
+      <FlatList
+        style={styles.flatListView}
+        data={items}
+        renderItem={({ item }) => <Item {...item} />}
+        keyExtractor={(item) => item.id || item["_id"]}
+      />
+    );
+  } else {
+    return (
+      <View style={styles.emptyListView}>
+        <Text style={styles.emptyListText}>
+          You currently have no requests listed
+        </Text>
+      </View>
+    );
+  }
+};
+
+export default MyRequest;

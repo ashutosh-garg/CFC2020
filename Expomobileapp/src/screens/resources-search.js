@@ -49,6 +49,9 @@ const styles = StyleSheet.create({
     textAlign: "center",
     marginTop: 15,
   },
+  helpText: {
+    fontSize: 10,
+  },
   searchResultText: {
     padding: 10,
     color: "#1062FE",
@@ -81,12 +84,17 @@ const styles = StyleSheet.create({
 
     color: "gray",
   },
+  showFilterLink: {
+    color: "#1062FE",
+    padding: 15
+  },
 });
 
 var quantityAsked;
 var tagAsked;
 var currentUserLocationLatitude;
 var currentUserLocationLongitude;
+var showFilter = true;
 const SearchResources = function ({ route, navigation }) {
   const [query, setQuery] = React.useState({
     type: "Other",
@@ -126,6 +134,8 @@ const SearchResources = function ({ route, navigation }) {
   };
 
   const searchItem = () => {
+    showFilter = !showFilter;
+
     quantityAsked = parseInt(query.quantity, 10) || 1;
     tagAsked = query.tag;
     const payload = {
@@ -182,6 +192,10 @@ const SearchResources = function ({ route, navigation }) {
       });
   };
 
+  const toggleFilter = () => {
+    showFilter = !showFilter;
+  };
+
   function distance(lat1, lon1, lat2, lon2) {
     var p = 0.017453292519943295;
     var c = Math.cos;
@@ -193,6 +207,14 @@ const SearchResources = function ({ route, navigation }) {
   }
   return (
     <View style={styles.outerView}>
+
+      { !(showFilter) && (
+        <TouchableOpacity onPress={toggleFilter}>
+          <Text style={styles.showFilterLink}>Show Filters . . .</Text>
+        </TouchableOpacity>
+      )}
+
+      { showFilter && (
       <View style={styles.inputsView}>
         <Text style={styles.label}>Category</Text>
         <PickerSelect
@@ -231,6 +253,7 @@ const SearchResources = function ({ route, navigation }) {
           returnKeyType="send"
           enablesReturnKeyAutomatically={true}
           placeholder="e.g., 1"
+          keyboardType="numeric"
           blurOnSubmit={false}
         />
         <Text style={styles.label}>Name</Text>
@@ -248,6 +271,7 @@ const SearchResources = function ({ route, navigation }) {
           <Text style={styles.button}>Search</Text>
         </TouchableOpacity>
       </View>
+      )}
 
       <Text style={styles.searchResultText}>{info}</Text>
 
@@ -263,7 +287,9 @@ const SearchResources = function ({ route, navigation }) {
           navigation.navigate("Add Request");
         }}
       >
-        <Text style={styles.button}>Add Request</Text>
+        <Text style={styles.button}>Add Request
+          <Text style={styles.helpText}> *will notify you when resources are avaliable</Text>
+        </Text>
       </TouchableOpacity>
     </View>
   );

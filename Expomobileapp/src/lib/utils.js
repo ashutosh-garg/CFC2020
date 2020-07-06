@@ -37,6 +37,25 @@ export const search = (query) => {
   });
 };
 
+export const searchRequest = (query) => {
+  const userID = query.userID ? `userID=${query.userID}` : ''
+
+  return fetch(`${serverUrl}/api/request?${userID}`, {
+    method: 'GET',
+    mode: 'no-cors',
+    cache: 'no-cache',
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  }).then((response) => {
+    if (!response.ok) {
+      throw new Error(response.statusText || response.message || response.status);
+    } else {
+      return response.json();
+    }
+  });
+};
+
 export const add = (item) => {
   console.log(serverUrl);
   return fetch(`${serverUrl}/api/resource`, {
@@ -60,6 +79,28 @@ export const add = (item) => {
 
 export const update = (item) => {
   return fetch(`${serverUrl}/api/resource/${item.id}`, {
+    method: "PATCH",
+    mode: "no-cors",
+    cache: "no-cache",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(item),
+  }).then((response) => {
+    if (!response.ok) {
+      if (response.status === 404) {
+        throw new Error("Item not found");
+      } else {
+        throw new Error(
+          "Please try again. If the problem persists contact an administrator."
+        );
+      }
+    }
+  });
+};
+
+export const updateRequest = (item) => {
+  return fetch(`${serverUrl}/api/request/${item.id}`, {
     method: "PATCH",
     mode: "no-cors",
     cache: "no-cache",
