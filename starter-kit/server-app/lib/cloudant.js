@@ -175,11 +175,12 @@ function deleteById(id, rev) {
  * @param {String} location - the GPS location of the item
  * @param {String} contact - the contact info 
  * @param {String} userID - the ID of the user 
+ * @param {String} tag - the tag for the item 
  * 
  * @return {Promise} - promise that will be resolved (or rejected)
  * when the call to the DB completes
  */
-function create(type, name, description, quantity, location, contact, userID, isRequest) {
+function create(type, name, description, quantity, location, contact, userID, tag, isRequest) {
     return new Promise((resolve, reject) => {
         let itemId = uuidv4();
         let whenCreated = Date.now();
@@ -193,6 +194,7 @@ function create(type, name, description, quantity, location, contact, userID, is
             location: location,
             contact: contact,
             userID: userID,
+            tag: tag,
             isRequest: isRequest,
             whenCreated: whenCreated
         };
@@ -221,11 +223,12 @@ function create(type, name, description, quantity, location, contact, userID, is
  * @param {String} location - the GPS location of the item
  * @param {String} contact - the contact info 
  * @param {String} userID - the ID of the user 
+ * @param {String} tag - the tag for the item
  * 
  * @return {Promise} - promise that will be resolved (or rejected)
  * when the call to the DB completes
  */
-function update(id, type, name, description, quantity, location, contact, userID) {
+function update(id, type, name, description, quantity, location, contact, userID, tag) {
     return new Promise((resolve, reject) => {
         db.get(id, (err, document) => {
             if (err) {
@@ -242,6 +245,7 @@ function update(id, type, name, description, quantity, location, contact, userID
                 if (location) {item["location"] = location} else {item["location"] = document.location};
                 if (contact) {item["contact"] = contact} else {item["contact"] = document.contact};
                 if (userID) {item["userID"] = userID} else {item["userID"] = document.userID};
+				if (tag) {item["tag"] = tag} else {item["tag"] = document.tag};
  
                 item["isRequest"] = false;
 

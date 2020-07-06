@@ -86,7 +86,7 @@ const styles = StyleSheet.create({
 });
 
 const EditResource = (props) => {
-  const clearItem = { userID: userID(), e: 'Food', name: '', description: '', location: '', contact: '', quantity: '1' }
+  const clearItem = { userID: userID(), e: 'Other', name: '', description: '', location: '', contact: '', quantity: '1', tag: '' }
   const [item, setItem] = React.useState(clearItem);
   const [useLocation, setUseLocation] = React.useState(false);
   const [position, setPosition] = React.useState({})
@@ -96,7 +96,7 @@ const EditResource = (props) => {
       const item = props.route.params.item;
       setItem({ 
         ...item,
-        quantity: item.quantity.toString()
+        quantity: item.quantity
        });
 
       Geolocation.getCurrentPosition((pos) => {
@@ -118,7 +118,7 @@ const EditResource = (props) => {
   const updateItem = () => {
     const payload = {
       ...item,
-      quantity: isNaN(item.quantity) ? 1 : parseInt(item.quantity),
+      quantity: isNaN(item.quantity) ? 1 : item.quantity,
       id: item.id || item['_id']
     };
 
@@ -165,21 +165,21 @@ const EditResource = (props) => {
     <ScrollView style={styles.outerView}>
       <View style={styles.splitView}>
         <View style={styles.typeArea}>
-          <Text style={styles.label}>Type</Text>
+          <Text style={styles.label}>Category</Text>
           <PickerSelect
             style={{ inputIOS: styles.selector }}
             value={item.type}
             onValueChange={(t) => setItem({ ...item, type: t })}
             items={[
-              { label: 'Food', value: 'Food' },
+              { label: 'Other', value: 'Other' },
               { label: 'Water', value: 'Water' },
+              { label: 'Food', value: 'Food' },
               { label: 'Grocery', value: 'Grocery' },
               { label: 'Dairy Products', value: 'Dairy' },
               { label: 'Medical Needs', value: 'Medical' },
               { label: 'Stationary Needs', value: 'Stationary' },
               { label: 'Shelter Needs', value: 'Shelter' },
-              { label: 'Help', value: 'Help' },
-              { label: 'Other', value: 'Other' }
+              { label: 'Help', value: 'Help' }
             ]}
           />
         </View>
@@ -207,6 +207,17 @@ const EditResource = (props) => {
         returnKeyType='send'
         enablesReturnKeyAutomatically={true}
         placeholder='e.g., Tomotatoes'
+        blurOnSubmit={false}
+      />
+      <Text style={styles.label}>Tag</Text>
+      <TextInput
+        style={styles.textInput}
+        value={item.tag}
+        onChangeText={(t) => setItem({ ...item, tag: t})}
+        onSubmitEditing={updateItem}
+        returnKeyType='send'
+        enablesReturnKeyAutomatically={true}
+        placeholder='e.g., Corona Pandemic'
         blurOnSubmit={false}
       />
       <Text style={styles.label}>Contact</Text>

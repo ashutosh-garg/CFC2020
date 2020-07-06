@@ -76,7 +76,7 @@ const styles = StyleSheet.create({
 });
 
 const AddResource = function ({ navigation }) {
-  const clearItem = { userID: userID(), type: 'Food', name: '', description: '', location: '', contact: '', quantity: '1' }
+  const clearItem = { userID: userID(), type: 'Other', name: '', description: '', location: '', contact: '', quantity: '1', tag: '' }
   const [item, setItem] = React.useState(clearItem);
   const [useLocation, setUseLocation] = React.useState(true);
   const [position, setPosition] = React.useState({})
@@ -108,7 +108,7 @@ const AddResource = function ({ navigation }) {
   const sendItem = () => {
     const payload = {
       ...item,
-      quantity: isNaN(item.quantity) ? 1 : parseInt(item.quantity)
+      quantity: isNaN(item.quantity) ? 1 : item.quantity
     };
 
     add(payload)
@@ -126,21 +126,21 @@ const AddResource = function ({ navigation }) {
     <ScrollView style={styles.outerView}>
       <View style={styles.splitView}>
         <View style={styles.typeArea}>
-          <Text style={styles.label}>Type</Text>
+          <Text style={styles.label}>Category</Text>
           <PickerSelect
             style={{ inputIOS: styles.selector }}
             value={item.type}
             onValueChange={(t) => setItem({ ...item, type: t })}
             items={[
-                { label: 'Food', value: 'Food' },
-				{ label: 'Water', value: 'Water' },
-				{ label: 'Grocery', value: 'Grocery' },
-				{ label: 'Dairy Products', value: 'Dairy' },
-				{ label: 'Medical Needs', value: 'Medical' },
-				{ label: 'Stationary Needs', value: 'Stationary' },
-				{ label: 'Shelter Needs', value: 'Shelter' },
-				{ label: 'Help', value: 'Help' },
-				{ label: 'Other', value: 'Other' }
+              { label: 'Other', value: 'Other' },
+              { label: 'Water', value: 'Water' },
+              { label: 'Food', value: 'Food' },
+              { label: 'Grocery', value: 'Grocery' },
+              { label: 'Dairy Products', value: 'Dairy' },
+              { label: 'Medical Needs', value: 'Medical' },
+              { label: 'Stationary Needs', value: 'Stationary' },
+              { label: 'Shelter Needs', value: 'Shelter' },
+              { label: 'Help', value: 'Help' }
             ]}
           />
         </View>
@@ -168,6 +168,17 @@ const AddResource = function ({ navigation }) {
         returnKeyType='send'
         enablesReturnKeyAutomatically={true}
         placeholder='e.g., Tomotatoes'
+        blurOnSubmit={false}
+      />
+      <Text style={styles.label}>Tag</Text>
+      <TextInput
+        style={styles.textInput}
+        value={item.tag}
+        onChangeText={(t) => setItem({ ...item, tag: t})}
+        onSubmitEditing={sendItem}
+        returnKeyType='send'
+        enablesReturnKeyAutomatically={true}
+        placeholder='e.g., Corona Pandemic'
         blurOnSubmit={false}
       />
       <Text style={styles.label}>Contact</Text>

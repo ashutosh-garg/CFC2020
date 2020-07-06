@@ -2,7 +2,7 @@ import React from 'react';
 import { StyleSheet, Text, TextInput, FlatList, View, TouchableOpacity, Alert } from 'react-native';
 import PickerSelect from 'react-native-picker-select';
 import { createOpenLink } from 'react-native-open-maps';
-
+import Geolocation from '@react-native-community/geolocation';
 import { search } from '../lib/utils';
 
 const styles = StyleSheet.create({
@@ -80,8 +80,12 @@ const styles = StyleSheet.create({
   }
 });
 
+var quantityAsked;
+var tagAsked;
+var currentUserLocationLatitude;
+var currentUserLocationLongitude;
 const SearchResources = function ({ route, navigation }) {
-  const [query, setQuery] = React.useState({ type: 'Food', name: '' });
+  const [query, setQuery] = React.useState({ type: 'Other', name: '', quantity: '1', tag: '' });
   const [items, setItems] = React.useState([]);
   const [info, setInfo] = React.useState('');
 
@@ -101,40 +105,94 @@ const SearchResources = function ({ route, navigation }) {
   };
 
   const searchItem = () => {
+    quantityAsked = parseInt(query.quantity, 10) || 1;
+    tagAsked = query.tag;
     const payload = {
       ...query
     };
 
     search(payload)
       .then((results) => {
+        var arrayLength = results.length;
+        for(var i=arrayLength-1; i>=0; i--){
+          if(results[i].quantity < quantityAsked){
+            results.splice(i, 1);
+          }
+          else if(tagAsked != null && tagAsked != '' && tagAsked != results[i].tag){
+            results.splice(i, 1);
+          }
+        }
+        Geolocation.getCurrentPosition((pos) => {
+          currentUserLocationLatitude = `${pos.coords.latitude}`
+          currentUserLocationLongitude = `${pos.coords.longitude}`
+        });
+        if(currentUserLocationLatitude != null && currentUserLocationLatitude != '' && currentUserLocationLongitude != null && currentUserLocationLongitude != ''){
+          for(var i=0; i<results.length; i++){
+            if(results[i].location != null && results[i].location != ''){
+              var coords = results[i].location.split(',');
+              results[i].distance = distance(currentUserLocationLatitude, currentUserLocationLongitude, coords[0], coords[1]);
+            }
+            else{
+              results[i].distance = 0;
+            }
+          }
+          results.sort((a, b) => (a.distance > b.distance) ? 1 : -1);
+        }
         setInfo(`${results.length} result(s)`)
         setItems(results);
       })
       .catch(err => {
-        console.log(err);
         Alert.alert('ERROR', 'Please try again. If the problem persists contact an administrator.', [{text: 'OK'}]);
       });
   };
 
+  function distance(lat1, lon1, lat2, lon2) {
+    var p = 0.017453292519943295;
+    var c = Math.cos;
+    var a = 0.5 - c((lat2 - lat1) * p)/2 + c(lat1 * p) * c(lat2 * p) * (1 - c((lon2 - lon1) * p))/2;
+    return 12742 * Math.asin(Math.sqrt(a));
+  }
   return (
     <View style={styles.outerView}>
       <View style={styles.inputsView}>
-        <Text style={styles.label}>Type</Text>
+        <Text style={styles.label}>Category</Text>
         <PickerSelect
           style={{ inputIOS: styles.selector }}
           value={query.type}
           onValueChange={(t) => setQuery({ ...query, type: t })}
           items={[
-            { label: 'Food', value: 'Food' },
-            { label: 'Water', value: 'Water' },
-            { label: 'Grocery', value: 'Grocery' },
-            { label: 'Dairy Products', value: 'Dairy' },
-            { label: 'Medical Needs', value: 'Medical' },
-            { label: 'Stationary Needs', value: 'Stationary' },
-            { label: 'Shelter Needs', value: 'Shelter' },
-            { label: 'Help', value: 'Help' },
-            { label: 'Other', value: 'Other' }
+              { label: 'Other', value: 'Other' },
+              { label: 'Water', value: 'Water' },
+              { label: 'Food', value: 'Food' },
+              { label: 'Grocery', value: 'Grocery' },
+              { label: 'Dairy Products', value: 'Dairy' },
+              { label: 'Medical Needs', value: 'Medical' },
+              { label: 'Stationary Needs', value: 'Stationary' },
+              { label: 'Shelter Needs', value: 'Shelter' },
+              { label: 'Help', value: 'Help' }
           ]}
+        />
+        <Text style={styles.label}>Tag</Text>
+        <TextInput
+          style={styles.textInput}
+          value={query.tag}
+          onChangeText={(t) => setQuery({ ...query, tag: t})}
+          onSubmitEditing={searchItem}
+          returnKeyType='send'
+          enablesReturnKeyAutomatically={true}
+          placeholder='e.g., Tomatoes'
+          blurOnSubmit={false}
+      />
+        <Text style={styles.label}>Quantity</Text>
+        <TextInput
+          style={styles.textInput}
+          value={query.quantity}
+          onChangeText={(t) => setQuery({ ...query, quantity: t})}
+          onSubmitEditing={searchItem}
+          returnKeyType='send'
+          enablesReturnKeyAutomatically={true}
+          placeholder='e.g., 1'
+          blurOnSubmit={false}
         />
         <Text style={styles.label}>Name</Text>
         <TextInput
@@ -144,7 +202,7 @@ const SearchResources = function ({ route, navigation }) {
           onSubmitEditing={searchItem}
           returnKeyType='send'
           enablesReturnKeyAutomatically={true}
-          placeholder='e.g., Tomotatoes'
+          placeholder='e.g., Tomatoes'
           blurOnSubmit={false}
         />
         <TouchableOpacity onPress={searchItem}>

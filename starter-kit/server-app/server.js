@@ -175,7 +175,7 @@ app.get('/api/resource', (req, res) => {
  * The ID and rev of the resource will be returned if successful
  */
 
-let types = ["Food", "Other", "Help", 'Water', 'Grocery', 'Dairy', 'Medical', 'Stationary', 'Shelter']
+let types = ["Other", "Water", "Food", "Grocery", "Dairy", "Medical", "Stationary", "Shelter", "Help"]
 app.post('/api/resource', (req, res) => {
   if (!req.body.type) {
     return res.status(422).json({ errors: "Type of item must be provided"});
@@ -196,9 +196,10 @@ app.post('/api/resource', (req, res) => {
   const quantity = req.body.quantity || 1;
   const location = req.body.location || '';
   const contact = req.body.contact;
+  const tag = req.body.tag;
 
   cloudant
-    .create(type, name, description, quantity, location, contact, userID, false)
+    .create(type, name, description, quantity, location, contact, userID, tag, false)
     .then(data => {
       if (data.statusCode != 201) {
         /**** 
@@ -228,12 +229,13 @@ app.patch('/api/resource/:id', (req, res) => {
   const name = req.body.name || '';
   const description = req.body.description || '';
   const userID = req.body.userID || '';
-  const quantity = req.body.quantity || '';
+  const quantity = req.body.quantity || 1;
   const location = req.body.location || '';
   const contact = req.body.contact || '';
+  const tag = req.body.tag || '';
 
   cloudant
-    .update(req.params.id, type, name, description, quantity, location, contact, userID)
+    .update(req.params.id, type, name, description, quantity, location, contact, userID, tag)
     .then(data => {
       if (data.statusCode != 200) {
         res.sendStatus(data.statusCode)
