@@ -87,6 +87,7 @@ const styles = StyleSheet.create({
   showFilterLink: {
     color: "#1062FE",
     padding: 15,
+    overflow: "hidden",
   },
 });
 
@@ -104,6 +105,7 @@ const SearchResources = function ({ route, navigation }) {
   });
   const [items, setItems] = React.useState([]);
   const [info, setInfo] = React.useState("");
+  const [showFilter, toggleFilter] = React.useState(true);
 
   const Item = (props) => {
     return (
@@ -132,7 +134,7 @@ const SearchResources = function ({ route, navigation }) {
   };
 
   const searchItem = () => {
-    showFilter = !showFilter;
+    toggleFilter(false);
 
     quantityAsked = parseInt(query.quantity, 10) || 1;
     tagAsked = query.tag;
@@ -190,8 +192,8 @@ const SearchResources = function ({ route, navigation }) {
       });
   };
 
-  const toggleFilter = () => {
-    showFilter = !showFilter;
+  const onClickShow = () => {
+    toggleFilter(true);
   };
 
   function distance(lat1, lon1, lat2, lon2) {
@@ -205,8 +207,8 @@ const SearchResources = function ({ route, navigation }) {
   }
   return (
     <View style={styles.outerView}>
-      {!showFilter && (
-        <TouchableOpacity onPress={toggleFilter}>
+      { !showFilter && (
+        <TouchableOpacity onPress={onClickShow}>
           <Text style={styles.showFilterLink}>Show Filters . . .</Text>
         </TouchableOpacity>
       )}
