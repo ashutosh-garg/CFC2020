@@ -11,48 +11,81 @@ import {
 import { createOpenLink } from "react-native-open-maps";
 
 import { update, remove } from "../lib/utils";
+import { Value } from "react-native-reanimated";
 
 const styles = StyleSheet.create({
   outerView: {
     flex: 1,
-    flexDirection: "row",
     padding: 22,
     backgroundColor: "#FFF",
     alignItems: "center",
   },
   claimButton: {
+    flexDirection: "row",
     color: "#FFFFFF",
-    fontFamily: "IBMPlexSans-Medium",
     fontSize: 16,
     padding: 12,
-    marginTop: 15,
-    marginLeft: 80,
+    marginTop: 70,
   },
   locatorButton: {
+    flex: 1,
+    flexDirection: "column",
     position: "relative",
     color: "#FFFFFF",
-    fontFamily: "IBMPlexSans-Medium",
     fontSize: 16,
     padding: 12,
     marginTop: 15,
+  },
+  label: {
+    marginLeft: 20,
+    marginTop: 30,
+    color: "#000",
+    fontSize: 25,
+    paddingBottom: 5,
+  },
+  quantityArea: {
+    width: "40%",
+    height: "17%",
+  },
+  textInput: {
+    flex: 1,
+    borderColor: "#D0E2FF",
+    borderWidth: 2,
+    padding: 14,
+    elevation: 2,
+  },
+  content: {
+    color: "#323232",
+    marginTop: 10,
+    marginBottom: 10,
+    fontSize: 25,
   },
 });
 
 const ShowResource = (props) => {
   let it = JSON.parse(JSON.stringify(props.route.params.item));
-  //console.log(it);
-  var qt = 1;
+  const [quantity, setQuantity] = React.useState({});
+
   return (
     <View style={styles.outerView}>
-      <View>
-        <TextInput />
+      <Text style={styles.content}>{props.route.params.item.name}</Text>
+      <Text style={styles.content}>{props.route.params.item.quantity}</Text>
+      <View style={styles.quantityArea}>
+        <Text style={styles.label}>Quantity</Text>
+        <TextInput
+          style={styles.textInput}
+          defaultValue={props.route.params.item.quantity.toString()}
+          keyboardType="numeric"
+          onChangeText={(num) => setQuantity(num)}
+        />
       </View>
       <View style={styles.claimButton}>
         <TouchableOpacity style={{ width: 70 }}>
           <Button
             title="Claim it!"
             onPress={() => {
-              var rem = it.quantity - qt;
+              console.log(quantity);
+              var rem = it.quantity - quantity;
               if (rem < 0) {
                 Alert.alert(
                   "Not allowed",
