@@ -11,7 +11,6 @@ import {
 import { createOpenLink } from "react-native-open-maps";
 
 import { update, remove } from "../lib/utils";
-import { Value } from "react-native-reanimated";
 
 const styles = StyleSheet.create({
   outerView: {
@@ -21,38 +20,35 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   claimButton: {
-    flexDirection: "row",
+    flex: 1,
+    position: "relative",
+    flexDirection: "column",
     color: "#FFFFFF",
     fontSize: 16,
     padding: 12,
-    marginTop: 70,
   },
   locatorButton: {
     flex: 1,
     flexDirection: "column",
-    position: "relative",
     color: "#FFFFFF",
     fontSize: 16,
     padding: 12,
-    marginTop: 15,
+    marginBottom: 200,
   },
   label: {
     marginLeft: 20,
-    marginTop: 30,
+    marginTop: 70,
     color: "#000",
     fontSize: 25,
     paddingBottom: 5,
   },
-  quantityArea: {
-    width: "40%",
-    height: "17%",
-  },
   textInput: {
-    flex: 1,
     borderColor: "#D0E2FF",
     borderWidth: 2,
-    padding: 14,
+    padding: 6,
     elevation: 2,
+    width: "50%",
+    height: "7%",
   },
   content: {
     color: "#323232",
@@ -64,25 +60,27 @@ const styles = StyleSheet.create({
 
 const ShowResource = (props) => {
   let it = JSON.parse(JSON.stringify(props.route.params.item));
-  const [quantity, setQuantity] = React.useState({});
+  it.id = it._id;
+  const [quantity, setQuantity] = React.useState(Number);
 
   return (
     <View style={styles.outerView}>
-      <Text style={styles.content}>{props.route.params.item.name}</Text>
-      <Text style={styles.content}>{props.route.params.item.quantity}</Text>
-      <View style={styles.quantityArea}>
-        <Text style={styles.label}>Quantity</Text>
-        <TextInput
-          style={styles.textInput}
-          defaultValue={props.route.params.item.quantity.toString()}
-          keyboardType="numeric"
-          onChangeText={(num) => setQuantity(num)}
-        />
-      </View>
+      <Text style={styles.content}>Item : {props.route.params.item.name}</Text>
+      <Text style={styles.content}>
+        Quantity available : {props.route.params.item.quantity}
+      </Text>
+      <Text style={styles.label}>How many do you want?</Text>
+      <TextInput
+        style={styles.textInput}
+        placeholder="Enter quantity"
+        //value={props.route.params.item.quantity}
+        keyboardType="numeric"
+        onChangeText={(num) => setQuantity(num)}
+      />
       <View style={styles.claimButton}>
-        <TouchableOpacity style={{ width: 70 }}>
+        <TouchableOpacity style={{ width: "100%" }}>
           <Button
-            title="Claim it!"
+            title="Claim"
             onPress={() => {
               console.log(quantity);
               var rem = it.quantity - quantity;
@@ -125,7 +123,7 @@ const ShowResource = (props) => {
         </TouchableOpacity>
       </View>
       <View style={styles.locatorButton}>
-        <TouchableOpacity style={{ width: 100 }}>
+        <TouchableOpacity style={{ width: "100%" }}>
           <Button
             title="Go to location"
             onPress={createOpenLink({
