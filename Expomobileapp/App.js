@@ -16,6 +16,7 @@ import AddResource from "./src/screens/resource-add";
 import EditResource from "./src/screens/resource-edit";
 import MyResources from "./src/screens/resources-my";
 import Request from "./src/screens/request-add";
+import ShowResource from "./src/screens/resource-claim";
 
 import { HomeIcon, DonateIcon, SearchIcon } from "./src/images/svg-icons";
 
@@ -83,10 +84,7 @@ const TabLayout = () => (
 
 const RequestStackLayout = () => (
   <Stack.Navigator>
-    <Stack.Screen
-      name="My Requests"
-      component={MyRequest}
-    />
+    <Stack.Screen name="My Requests" component={MyRequest} />
     <Stack.Screen name="Edit Request" component={EditRequest} />
   </Stack.Navigator>
 );
@@ -112,6 +110,7 @@ const SearchStackLayout = () => (
     />
     <Stack.Screen name="Chat" component={Chat} />
     <Stack.Screen name="Add Request" component={Request} />
+    <Stack.Screen name="ShowResource" component={ShowResource} />
   </Stack.Navigator>
 );
 

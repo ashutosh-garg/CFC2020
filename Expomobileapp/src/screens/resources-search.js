@@ -86,7 +86,7 @@ const styles = StyleSheet.create({
   },
   showFilterLink: {
     color: "#1062FE",
-    padding: 15
+    padding: 15,
   },
 });
 
@@ -110,11 +110,9 @@ const SearchResources = function ({ route, navigation }) {
       <TouchableOpacity
         style={styles.itemTouchable}
         //onPress={() => { navigation.navigate('Map', { item: props }); }}
-        onPress={createOpenLink({
-          query: props.location,
-          provider: "google",
-          zoom: 10,
-        })}
+        onPress={() => {
+          navigation.navigate("ShowResource", { item: props });
+        }}
       >
         <View style={styles.itemView}>
           <Text style={styles.itemName}>{props.name}</Text>
@@ -207,70 +205,69 @@ const SearchResources = function ({ route, navigation }) {
   }
   return (
     <View style={styles.outerView}>
-
-      { !(showFilter) && (
+      {!showFilter && (
         <TouchableOpacity onPress={toggleFilter}>
           <Text style={styles.showFilterLink}>Show Filters . . .</Text>
         </TouchableOpacity>
       )}
 
-      { showFilter && (
-      <View style={styles.inputsView}>
-        <Text style={styles.label}>Category</Text>
-        <PickerSelect
-          style={{ inputIOS: styles.selector }}
-          value={query.type}
-          onValueChange={(t) => setQuery({ ...query, type: t })}
-          items={[
-            { label: "Other", value: "Other" },
-            { label: "Water", value: "Water" },
-            { label: "Food", value: "Food" },
-            { label: "Grocery", value: "Grocery" },
-            { label: "Dairy Products", value: "Dairy" },
-            { label: "Medical Needs", value: "Medical" },
-            { label: "Stationary Needs", value: "Stationary" },
-            { label: "Shelter Needs", value: "Shelter" },
-            { label: "Help", value: "Help" },
-          ]}
-        />
-        <Text style={styles.label}>Tag</Text>
-        <TextInput
-          style={styles.textInput}
-          value={query.tag}
-          onChangeText={(t) => setQuery({ ...query, tag: t })}
-          onSubmitEditing={searchItem}
-          returnKeyType="send"
-          enablesReturnKeyAutomatically={true}
-          placeholder="e.g., Tomatoes"
-          blurOnSubmit={false}
-        />
-        <Text style={styles.label}>Quantity</Text>
-        <TextInput
-          style={styles.textInput}
-          value={query.quantity}
-          onChangeText={(t) => setQuery({ ...query, quantity: t })}
-          onSubmitEditing={searchItem}
-          returnKeyType="send"
-          enablesReturnKeyAutomatically={true}
-          placeholder="e.g., 1"
-          keyboardType="numeric"
-          blurOnSubmit={false}
-        />
-        <Text style={styles.label}>Name</Text>
-        <TextInput
-          style={styles.textInput}
-          value={query.name}
-          onChangeText={(t) => setQuery({ ...query, name: t })}
-          onSubmitEditing={searchItem}
-          returnKeyType="send"
-          enablesReturnKeyAutomatically={true}
-          placeholder="e.g., Tomatoes"
-          blurOnSubmit={false}
-        />
-        <TouchableOpacity onPress={searchItem}>
-          <Text style={styles.button}>Search</Text>
-        </TouchableOpacity>
-      </View>
+      {showFilter && (
+        <View style={styles.inputsView}>
+          <Text style={styles.label}>Category</Text>
+          <PickerSelect
+            style={{ inputIOS: styles.selector }}
+            value={query.type}
+            onValueChange={(t) => setQuery({ ...query, type: t })}
+            items={[
+              { label: "Other", value: "Other" },
+              { label: "Water", value: "Water" },
+              { label: "Food", value: "Food" },
+              { label: "Grocery", value: "Grocery" },
+              { label: "Dairy Products", value: "Dairy" },
+              { label: "Medical Needs", value: "Medical" },
+              { label: "Stationary Needs", value: "Stationary" },
+              { label: "Shelter Needs", value: "Shelter" },
+              { label: "Help", value: "Help" },
+            ]}
+          />
+          <Text style={styles.label}>Tag</Text>
+          <TextInput
+            style={styles.textInput}
+            value={query.tag}
+            onChangeText={(t) => setQuery({ ...query, tag: t })}
+            onSubmitEditing={searchItem}
+            returnKeyType="send"
+            enablesReturnKeyAutomatically={true}
+            placeholder="e.g., Tomatoes"
+            blurOnSubmit={false}
+          />
+          <Text style={styles.label}>Quantity</Text>
+          <TextInput
+            style={styles.textInput}
+            value={query.quantity}
+            onChangeText={(t) => setQuery({ ...query, quantity: t })}
+            onSubmitEditing={searchItem}
+            returnKeyType="send"
+            enablesReturnKeyAutomatically={true}
+            placeholder="e.g., 1"
+            keyboardType="numeric"
+            blurOnSubmit={false}
+          />
+          <Text style={styles.label}>Name</Text>
+          <TextInput
+            style={styles.textInput}
+            value={query.name}
+            onChangeText={(t) => setQuery({ ...query, name: t })}
+            onSubmitEditing={searchItem}
+            returnKeyType="send"
+            enablesReturnKeyAutomatically={true}
+            placeholder="e.g., Tomatoes"
+            blurOnSubmit={false}
+          />
+          <TouchableOpacity onPress={searchItem}>
+            <Text style={styles.button}>Search</Text>
+          </TouchableOpacity>
+        </View>
       )}
 
       <Text style={styles.searchResultText}>{info}</Text>
@@ -287,8 +284,12 @@ const SearchResources = function ({ route, navigation }) {
           navigation.navigate("Add Request");
         }}
       >
-        <Text style={styles.button}>Add Request
-          <Text style={styles.helpText}> *will notify you when resources are avaliable</Text>
+        <Text style={styles.button}>
+          Add Request
+          <Text style={styles.helpText}>
+            {" "}
+            *will notify you when resources are avaliable
+          </Text>
         </Text>
       </TouchableOpacity>
     </View>
